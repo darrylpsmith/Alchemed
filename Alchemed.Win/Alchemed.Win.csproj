@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E7DE647F-6059-4B24-9E00-FBB0001DB422}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ConsultWill</RootNamespace>
+    <AssemblyName>ConsultWill</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddPatient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddPatient.Designer.cs">
+      <DependentUpon>AddPatient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApiServerStatus.cs" />
+    <Compile Include="ButtonsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ButtonsControl.Designer.cs">
+      <DependentUpon>ButtonsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CoffeeOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CoffeeOrder.Designer.cs">
+      <DependentUpon>CoffeeOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Comments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Comments.Designer.cs">
+      <DependentUpon>Comments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configure.Designer.cs">
+      <DependentUpon>Configure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Consult.Designer.cs">
+      <DependentUpon>Consult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces.cs" />
+    <Compile Include="DataInterfacesCloudBased.cs" />
+    <Compile Include="Doctor.cs" />
+    <Compile Include="DocumentAssignmentFolder.cs" />
+    <Compile Include="DocumentStore.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DocumentStore.Designer.cs">
+      <DependentUpon>DocumentStore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IDataInterfaces.cs" />
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Operation.cs" />
+    <Compile Include="Patient.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="PersonSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PersonSearch.Designer.cs">
+      <DependentUpon>PersonSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduledPeople.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScheduledPeople.Designer.cs">
+      <DependentUpon>ScheduledPeople.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectPostOpTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectPostOpTemplate.Designer.cs">
+      <DependentUpon>SelectPostOpTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StaticFunctions.cs" />
+    <EmbeddedResource Include="AddPatient.resx">
+      <DependentUpon>AddPatient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ButtonsControl.resx">
+      <DependentUpon>ButtonsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CoffeeOrder.resx">
+      <DependentUpon>CoffeeOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Comments.resx">
+      <DependentUpon>Comments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configure.resx">
+      <DependentUpon>Configure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consult.resx">
+      <DependentUpon>Consult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DocumentStore.resx">
+      <DependentUpon>DocumentStore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PersonSearch.resx">
+      <DependentUpon>PersonSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ScheduledPeople.resx">
+      <DependentUpon>ScheduledPeople.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectPostOpTemplate.resx">
+      <DependentUpon>SelectPostOpTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CoffeeCup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\coffee.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Alchemed.DataModel\Alchemed.DataModel.csproj">
+      <Project>{04068748-3ebb-4a06-bfaa-b63db24d4a75}</Project>
+      <Name>Alchemed.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RipaD.Client.JsonAccess\RipaD.Client.JsonAccess.csproj">
+      <Project>{8ebe137f-bc78-43dc-9484-4dd073315db1}</Project>
+      <Name>RipaD.Client.JsonAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

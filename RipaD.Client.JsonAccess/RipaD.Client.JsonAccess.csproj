@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ripad.Core.Common">
+      <HintPath>..\..\..\..\Blockwerx\Sam.Api\Ripad.Core.Common\bin\Debug\netstandard2.0\Ripad.Core.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
