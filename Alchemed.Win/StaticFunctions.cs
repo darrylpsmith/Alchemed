@@ -9,6 +9,7 @@ using Microsoft.Office.Interop.Word;
 using System.IO;
 using Newtonsoft.Json;
 using Alchemed.DataModel;
+using System.Reflection;
 
 namespace ConsultWill
 {
@@ -425,7 +426,7 @@ namespace ConsultWill
                 {
                     DisplayName = "Radiology && Investigations",
                     FolderName = "Radiology & Investigations",
-                    RemoveSourceFilesWhenAssigningToFolder = true,
+                    RemoveSourceFilesWhenAssigningToFolder = false,
                     ParentFolderName = "[PATIENT]",
                     UseLargeImages = true
                 };
@@ -446,17 +447,17 @@ namespace ConsultWill
             }
         }
 
-        public static string GetSelectedPatientFolder(string Person)
+        public static string GetSelectedPatientFolder(string Person, bool ommitRoot)
         {
             string selPatient = Person;
-            string subFolder = StaticFunctions.PatientsRootFolder + "\\" + selPatient.Substring(0, 1);
+            string subFolder = (ommitRoot ==true ? "" : StaticFunctions.PatientsRootFolder) + "\\" + selPatient.Substring(0, 1);
             string patientFolder = subFolder + "\\" + selPatient;
             return patientFolder;
         }
 
-        public static string GetSelectedPatientDocumentFolder(string Person, string Subfolder)
+        public static string GetSelectedPatientDocumentFolder(string Person, string Subfolder, bool OmmitRoot)
         {
-            string patientFolder = StaticFunctions.GetSelectedPatientFolder(Person);
+            string patientFolder = StaticFunctions.GetSelectedPatientFolder(Person, OmmitRoot);
             string patientRadFolder = patientFolder + "\\" +  Subfolder + "\\"; // "\\" + @"Radiology & Investigations" + "\\";
             return patientRadFolder;
         }
@@ -480,7 +481,7 @@ namespace ConsultWill
 
         private static string GetSelectedPatientConsultTrackerFolder(string Person)
         {
-            string patientFolder = StaticFunctions.GetSelectedPatientFolder(Person);
+            string patientFolder = StaticFunctions.GetSelectedPatientFolder(Person, false);
             string patientRadFolder = patientFolder + "\\" + "ConsultTracker" + "\\"; 
             return patientRadFolder;
         }
@@ -520,6 +521,13 @@ namespace ConsultWill
             
         }
 
+        public static string GetApplicationCommonDataFolder()
+        {
+            var commonAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            //get the currently executing assembly
+            Assembly thisAssembly = Assembly.GetExecutingAssembly();
+            return $"{commonAppDataFolder}/{Properties.Settings.Default.AppName}";
+        }
 
     }
 }

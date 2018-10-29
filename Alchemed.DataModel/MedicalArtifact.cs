@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using RipaD.Core;
-
+using System.Drawing;
 namespace Alchemed.DataModel
 {
     public class MedicalArtifact
@@ -20,5 +20,7 @@ namespace Alchemed.DataModel
         public DateTime Date { get; set; }
 
         public string BlobId { get; set; }
+        public string OriginalFullFilePath { get; set; }
+        
     }
 }

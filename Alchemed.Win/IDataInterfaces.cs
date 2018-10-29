@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Alchemed.DataModel;
+using System.IO;
+using System.Drawing;
+
 namespace ConsultWill
 {
     public interface IDataInterfaces
@@ -19,7 +22,7 @@ namespace ConsultWill
 
         List<Patient> GetTodaysOperations(string wildCard);
 
-        List<string> GetPatientFiles(string Folder);
+        IEnumerable<MedicalArtifact> GetPatientMedicalArtifacts(Patient patient, string Folder);
 
         void AddToTodaysConsults(Consult consult);
 
@@ -27,5 +30,13 @@ namespace ConsultWill
 
         Patient GetPatientById(string Id);
 
+        void AssignPatientFile(MedicalArtifact artifact, string selectedFile, string targetFolder, string relativeFolder, string fileName, bool RemoveSourceFilesWhenAssigningToFolder);
+
+        void LaunchPatientFile(Patient patient, string folder, string file);
+
+        MedicalArtifactThumbNail GetPatientMedicalArtifactThumbnail(string ArtifactId);
+
+        Image GetPatientMedicalArtifactThumbnailImage(Patient patient, string folder, MedicalArtifact Artifact);
+        
     }
 }

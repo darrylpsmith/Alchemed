@@ -45,31 +45,37 @@ namespace ConsultWill
             }
         }
 
-        private void DocumentStore_Load(object sender, EventArgs e)
-        {
 
-        }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
             {
-                string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(_currPerson.GetPatientString(), _docFolder.FolderName);
+
+                string documentFolder = StaticFunctions.GetSelectedPatientDocumentFolder(_currPerson.GetPatientString(), _docFolder.FolderName, false);
+                string relativeFolder = StaticFunctions.GetSelectedPatientDocumentFolder(_currPerson.GetPatientString(), _docFolder.FolderName, true);
+
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();
                 openFileDialog1.Multiselect = true;
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    if (!Directory.Exists(radFolder))
-                        Directory.CreateDirectory(radFolder);
+                    if (!Directory.Exists(documentFolder))
+                        Directory.CreateDirectory(documentFolder);
 
                     foreach (String selectedFile in openFileDialog1.FileNames)
                     {
                         string fileName = Path.GetFileName(selectedFile);
 
-                        File.Copy(selectedFile, radFolder + fileName);
+                        MedicalArtifact md = new MedicalArtifact { Id = Guid.NewGuid().ToString(), BlobId = Guid.NewGuid().ToString(), Date = DateTime.UtcNow, Name = fileName, TypeId = _docFolder.FolderName, PatientId = _currPerson.Id };
 
-                        if (_docFolder.RemoveSourceFilesWhenAssigningToFolder)
-                            File.Delete(selectedFile);
+                        StaticFunctions.DataInterface().AssignPatientFile(md, selectedFile, documentFolder, relativeFolder, fileName, _docFolder.RemoveSourceFilesWhenAssigningToFolder);
+
+
+
+                        //File.Copy(selectedFile, documentFolder + fileName);
+
+                        //if (_docFolder.RemoveSourceFilesWhenAssigningToFolder)
+                        //    File.Delete(selectedFile);
                     }
 
 
@@ -99,68 +105,84 @@ namespace ConsultWill
             }
 
             lvwDocuments.Items.Clear();
-            string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(_currPerson.GetPatientString(), _docFolder.FolderName);
-            if (Directory.Exists(radFolder))
+
+            var medicalArtifacts = StaticFunctions.DataInterface().GetPatientMedicalArtifacts(_currPerson, _docFolder.FolderName);
+            
+            if (medicalArtifacts != null)
             {
-                DirectoryInfo DirInfo = new DirectoryInfo(radFolder);
-
-                var filesInOrder = from f in DirInfo.EnumerateFiles()
-                                   orderby f.CreationTime descending
-                                   select f;
-
-                foreach (var file in filesInOrder)
+                foreach (var artifact in medicalArtifacts)
                 {
-                    string fileName = Path.GetFileName(file.FullName);
+                    string fileName = Path.GetFileName(artifact.Name);
                     ListViewItem it = new ListViewItem(fileName);
-
+                    it.Tag = artifact;
                     var itm = lvwDocuments.Items.Add(it);
+
+                    Image thumb = null;
+                    try
+                    {
+                        thumb = StaticFunctions.DataInterface().GetPatientMedicalArtifactThumbnailImage(_currPerson, _docFolder.FolderName, artifact);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    
 
                     try
                     {
                         if (_largeImages)
                         {
-                            imgThumbnails.Images.Add(file.FullName, GetThumbnail(file.FullName));
-                            itm.ImageKey = file.FullName;
+
+                            //imgThumbnails.Images.Add(file.Name, tn.GetThumbnail(file.OriginalFullFilePath));
+                            if (thumb != null)
+                            {
+                                imgThumbnails.Images.Add(artifact.Id, thumb);
+                                itm.ImageKey = artifact.Id; // file.Name;
+                            }
                         }
                     }
-                    catch
-                    { }
+                    catch (Exception ex)
+                    {
+                        if (artifact.Name.ToUpper().EndsWith(".PNG"))
+                        {
+                            ex = ex;
+                        }
+                            
 
-
+                    }
                 }
             }
         }
 
-        public bool ThumbnailCallback()
-        {
-            return true;
-        }
 
-        private Image GetThumbnail(string FileName)
-        {
+        //public Image GetThumbnail(string FileName)
+        //{
 
-            Image.GetThumbnailImageAbort callback =
-                new Image.GetThumbnailImageAbort(ThumbnailCallback);
-            Image image = new Bitmap(FileName);
-            Image pThumbnail = image.GetThumbnailImage(100, 100, callback, new
-               IntPtr());
+        //    Image.GetThumbnailImageAbort callback =
+        //        new Image.GetThumbnailImageAbort(ThumbnailCallback);
+        //    Image image = new Bitmap(FileName);
+        //    Image pThumbnail = image.GetThumbnailImage(100, 100, callback, new
+        //       IntPtr());
 
-            return pThumbnail;
+        //    return pThumbnail;
 
 
-            //Image image = Image.FromFile(fileName);
-            //Image thumb = image.GetThumbnailImage(120, 120, () => false, IntPtr.Zero);
-            //thumb.Save(Path.ChangeExtension(fileName, "thumb"));
+        //    //Image image = Image.FromFile(fileName);
+        //    //Image thumb = image.GetThumbnailImage(120, 120, () => false, IntPtr.Zero);
+        //    //thumb.Save(Path.ChangeExtension(fileName, "thumb"));
 
-            //e.Graphics.DrawImage(
-            //   pThumbnail,
-            //   10,
-            //   10,
-            //   pThumbnail.Width,
-            //   pThumbnail.Height);
-        }
+        //    //e.Graphics.DrawImage(
+        //    //   pThumbnail,
+        //    //   10,
+        //    //   10,
+        //    //   pThumbnail.Width,
+        //    //   pThumbnail.Height);
+        //}
 
 
+        //public bool ThumbnailCallback()
+        //{
+        //    return true;
+        //}
         private void lstDocuments_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -179,9 +201,9 @@ namespace ConsultWill
                 {
                     if (lvwDocuments.SelectedItems[0].SubItems[0].Text.Length != 0)
                     {
-                        string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(_currPerson.GetPatientString(), _docFolder.FolderName);
-                        string file = radFolder + lvwDocuments.SelectedItems[0].SubItems[0].Text;
-                        System.Diagnostics.Process.Start(file);
+                        MedicalArtifact file = (MedicalArtifact) lvwDocuments.SelectedItems[0].Tag;
+                        StaticFunctions.DataInterface().LaunchPatientFile(_currPerson, file.TypeId, file.Name);
+
                     }
                 }
             }

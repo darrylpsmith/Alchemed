@@ -675,6 +675,14 @@ namespace ConsultWill
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+
+
+        {
+            //File.WriteAllText("C:/temp/text.txt", "HELLO WORLD");
+
+            //StaticFunctions.DataInterface().AssignPatientFile(null,"C:/temp/text.txt", "ABC", "ABC", "test.txt", true);
+        }
     }
 
 

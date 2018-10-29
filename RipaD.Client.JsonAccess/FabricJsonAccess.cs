@@ -72,14 +72,28 @@ namespace RipaD.Client.JsonAccess
                 EntityFabricUri(),
                 _apiKey,
                 Entity,
-                propertiesToFilterOn
+                propertiesToFilterOn, false, true
                 );
 
             return (T) json;
         }
 
 
-        //public async Task<List<T>> GetEntities <T> (object Entity, List<string> propertiesToFilterOn)
+        public async Task<T> GetEntities<T>(T Entity, List<string> propertiesToFilterOn)
+        {
+
+            string entityTypeName = Entity.GetType().Name;
+
+            object json = await _dataService.GetAsync<T>(
+                EntityFabricUri(),
+                _apiKey,
+                Entity,
+                propertiesToFilterOn,false, false
+                );
+
+            return (T)json;
+        }
+        //public async Task<List<T>> GetEntities<T>(object Entity, List<string> propertiesToFilterOn)
         //{
 
         //    string entityTypeName = Entity.GetType().Name;
@@ -92,11 +106,11 @@ namespace RipaD.Client.JsonAccess
         //        true
         //        );
 
-        //    foreach(var jo in arr)
+        //    foreach (var jo in arr)
         //    {
-        //        object o =  JsonConvert.DeserializeObject<object>(jo.ToString());
+        //        object o = JsonConvert.DeserializeObject<object>(jo.ToString());
 
-                
+
         //        //object entityTyped = (new EntityFactory"") .GetEmptyTypedObect(entityTypeName);
         //        //entityTyped = EntityHelper.CopyPropertiesFromDynamicObjectToTypedObject(jo, entityTyped);
 
@@ -177,6 +191,41 @@ namespace RipaD.Client.JsonAccess
         public async Task<T> GetEntityById<T>(T Entity)
         {
             return await GetEntity<T>(Entity, new List<string> { "Id" });
+        }
+
+        public async Task<bool> UploadFileAsync(Stream fileStream, string fileName, string subFolderName)
+        {
+
+            bool ret = await _dataService.UploadFileAsync(
+                EntityFabricUri(),
+                _apiKey,
+                fileStream, 
+                fileName, 
+                subFolderName
+                );
+
+            if (ret )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<byte[]> DownloadFileAsync(string subFolderName, string fileName)
+        {
+
+            byte[] ret = await _dataService.DownloadFileAsync(
+                EntityFabricUri(),
+                _apiKey,
+                subFolderName,
+                fileName
+                );
+
+            return ret;
         }
 
 

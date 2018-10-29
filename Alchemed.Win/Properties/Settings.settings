@@ -20,5 +20,8 @@
     <Setting Name="CloudStorageUri" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://localhost:5001/api</Value>
     </Setting>
+    <Setting Name="AppName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Alchemed</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

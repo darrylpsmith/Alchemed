@@ -39,7 +39,7 @@ namespace ConsultWill
                 string patient = txtLasteName.Text + ", " + txtFirstName.Text + " " + txtPatientNumber.Text;
 
                 Patient patientToAdd = new Patient(txtFirstName.Text, txtLasteName.Text, txtPatientNumber.Text);
-                string folderName = StaticFunctions.GetSelectedPatientFolder(patient); //  txtLasteName.Text.Substring(0, 1).ToUpper() + "\\" + txtLasteName.Text + ", " + txtFirstName.Text + " " + txtPatientNumber.Text;
+                string folderName = StaticFunctions.GetSelectedPatientFolder(patient, false); //  txtLasteName.Text.Substring(0, 1).ToUpper() + "\\" + txtLasteName.Text + ", " + txtFirstName.Text + " " + txtPatientNumber.Text;
                 folderName = folderName.ToUpper();
 
                 if (StaticFunctions.DataInterface().PatientExists(patientToAdd) == false)

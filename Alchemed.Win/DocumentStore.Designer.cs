@@ -90,7 +90,7 @@
             this.Controls.Add(this.lblDescription);
             this.Name = "DocumentStore";
             this.Size = new System.Drawing.Size(230, 231);
-            this.Load += new System.EventHandler(this.DocumentStore_Load);
+            
             this.ResumeLayout(false);
             this.PerformLayout();
 

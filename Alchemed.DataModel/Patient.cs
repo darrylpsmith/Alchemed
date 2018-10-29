@@ -30,7 +30,7 @@ namespace Alchemed.DataModel
 
         public Patient(string patientString)
         {
-            PatientNo = patientString.Substring(patientString.LastIndexOf(' '));
+            PatientNo = patientString.Substring(patientString.LastIndexOf(' ')).Trim();
             LastName = patientString.Substring(0, patientString.IndexOf(','));
             FirstName = patientString.Substring(patientString.IndexOf(',') + 1);
             FirstName = FirstName.Substring(0, FirstName.LastIndexOf(' ')).Trim();

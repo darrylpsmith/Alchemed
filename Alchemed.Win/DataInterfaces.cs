@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Alchemed.DataModel;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace ConsultWill
 {
@@ -21,11 +22,9 @@ namespace ConsultWill
     class DataInterfacesFileBased : IDataInterfaces
     {
 
-
-
         public bool PatientExists(Patient patient)
         {
-            string folderName = StaticFunctions.GetSelectedPatientFolder(patient.GetPatientString());
+            string folderName = StaticFunctions.GetSelectedPatientFolder(patient.GetPatientString(), false);
             if (Directory.Exists(folderName) == false)
             {
                 return false;
@@ -40,7 +39,7 @@ namespace ConsultWill
         public void AddPatient(Patient newPatient)
         {
             
-            string folderName = StaticFunctions.GetSelectedPatientFolder(newPatient.GetPatientString());
+            string folderName = StaticFunctions.GetSelectedPatientFolder(newPatient.GetPatientString(),false);
             folderName = folderName.ToUpper();
             if (Directory.Exists(folderName) == false)
             {
@@ -51,10 +50,70 @@ namespace ConsultWill
         }
 
 
-        public List<string> GetPatientFiles(string Folder)
+        public IEnumerable<MedicalArtifact> GetPatientMedicalArtifacts(Patient patient, string relativeFolder)
         {
-            throw new NotImplementedException();
+
+            string filesFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), relativeFolder, false);
+
+            List<string> files = new List<string>();
+            List<MedicalArtifact> artifacts = new List<MedicalArtifact>();
+
+            if (Directory.Exists(filesFolder))
+            {
+                DirectoryInfo DirInfo = new DirectoryInfo(filesFolder);
+
+                var filesInOrder = from f in DirInfo.EnumerateFiles()
+                                   orderby f.CreationTime descending
+                                   select f;
+
+                foreach(var file in filesInOrder)
+                {
+                    artifacts.Add(new MedicalArtifact { Name = file.Name, OriginalFullFilePath = file.FullName, PatientId = patient.Id, TypeId = relativeFolder , Id = file.FullName });
+                }
+
+                return artifacts;
+            }
+            else
+            {
+                return null;
+            }
+
+
         }
+
+
+        public MedicalArtifactThumbNail GetPatientMedicalArtifactThumbnail(string ArtifactId)
+        {
+            return null;
+            //string filesFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), relativeFolder, false);
+
+            //List<string> files = new List<string>();
+            //List<MedicalArtifact> artifacts = new List<MedicalArtifact>();
+
+            //if (Directory.Exists(filesFolder))
+            //{
+            //    DirectoryInfo DirInfo = new DirectoryInfo(filesFolder);
+
+            //    var filesInOrder = from f in DirInfo.EnumerateFiles()
+            //                       orderby f.CreationTime descending
+            //                       select f;
+
+            //    foreach (var file in filesInOrder)
+            //    {
+            //        artifacts.Add(new MedicalArtifact { Name = file.Name, OriginalFullFilePath = file.FullName, PatientId = patient.Id, TypeId = relativeFolder });
+            //    }
+
+            //    return artifacts;
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+
+
+        }
+
+
 
         public List<Patient> GetPatients(string wildCard)
         {
@@ -230,6 +289,40 @@ namespace ConsultWill
                 return null;
             }
 
+        }
+
+        public void AssignPatientFile(MedicalArtifact artifact, string selectedFile, string targetFolder, string relativeFolder, string fileName, bool RemoveSourceFilesWhenAssigningToFolder)
+        {
+
+            File.Copy(selectedFile, targetFolder + fileName);
+
+            if (RemoveSourceFilesWhenAssigningToFolder)
+            {
+                File.Delete(selectedFile);
+            }
+
+            var patient = this.GetPatientById(artifact.PatientId);
+
+            string patientFolder = StaticFunctions.GetSelectedPatientFolder(patient.GetPatientString(), false);
+
+            File.WriteAllText(patientFolder + "/" + artifact.BlobId + ".json", JsonConvert.SerializeObject(artifact));
+
+        }
+
+        public void LaunchPatientFile(Patient patient, string folder, string file)
+        {
+            string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, false);
+            System.Diagnostics.Process.Start(radFolder + "/" + file);
+
+        }
+
+        public Image GetPatientMedicalArtifactThumbnailImage(Patient patient, string folder, MedicalArtifact Artifact)
+        {
+
+            ThumbNailer tn = new ThumbNailer();
+            return tn.GetThumbnail(Artifact.OriginalFullFilePath);
+
+            
         }
     }
 }

@@ -94,5 +94,17 @@ namespace ConsultWill.Properties {
                 this["CloudStorageUri"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alchemed")]
+        public string AppName {
+            get {
+                return ((string)(this["AppName"]));
+            }
+            set {
+                this["AppName"] = value;
+            }
+        }
     }
 }

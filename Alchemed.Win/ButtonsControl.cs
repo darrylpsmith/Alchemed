@@ -105,7 +105,7 @@ namespace ConsultWill
             {
                 statusMessagee("View patient file...", true);
 
-                string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString());
+                string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString(), false);
                 string patientDetailsFilePng = patientFolder + "\\" + StaticFunctions.PatientFilePng;
                 string patientDetailsFilePdf = patientFolder + "\\" + StaticFunctions.PatientFilePdf;
 
@@ -129,7 +129,7 @@ namespace ConsultWill
             try
             {
                 statusMessagee("Launching Clinical Notes...", true);
-                string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString());
+                string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString(), false);
                 string clinicalNotesFile = patientFolder + "\\" + StaticFunctions.ClinicalNotesFileName;
                 if (File.Exists(clinicalNotesFile))
                 {
@@ -222,7 +222,7 @@ namespace ConsultWill
 
                 if (selectedTemplate != null)
                 {
-                    string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString());
+                    string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString(), false);
                     int fileNumber = 0;
 
                     string targetFile;

@@ -7,6 +7,9 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RipaD.Core;
+using System.IO;
+using System.Net;
+
 
 
 namespace RipaD.Client.JsonAccess
@@ -67,6 +70,7 @@ namespace RipaD.Client.JsonAccess
 
                 if (value != null && includeThisProperty)
                 {
+                    value = WebUtility.UrlEncode(value.ToString());
                     queryString += i > 0 ? "|" : "";
                     queryString += $"{property.Name}={value}";
                     i++;
@@ -75,13 +79,13 @@ namespace RipaD.Client.JsonAccess
 
             return queryString;
         }
-        public async Task<T> GetAsync <T> (string uri, string ApiKey, T entity, List<string> propertiesToFilterOn, bool returnsAlllist = false)
+        public async Task<T> GetAsync <T> (string uri, string ApiKey, T entity, List<string> propertiesToFilterOn, bool returnsAlllist = false, bool returnsOneItem = false)
         {
             string strBody = JsonConvert.SerializeObject(entity);
             string entityType = entity.GetType().Name;
             string query = GetQueryStringForEntity(entity, propertiesToFilterOn);
             bool returnsArray = false;
-
+            
             if (ApiKey.Length > 0)
             {
                 uri += "/" + ApiKey;
@@ -94,7 +98,6 @@ namespace RipaD.Client.JsonAccess
             }
             else if (propertiesToFilterOn != null)
             {
-                returnsArray = true;
                 uri += "/" + entityType + "/BYUQ" + "?" + query;
             }
             else
@@ -116,7 +119,7 @@ namespace RipaD.Client.JsonAccess
             {
                 string json = response.Content.ReadAsStringAsync().Result;
 
-                if (returnsArray == true)
+                if (returnsOneItem == true)
                 {
                     //data = JsonConvert.DeserializeObject<T>(json);
                     JArray ret2 = (JArray)JsonConvert.DeserializeObject<JArray>(json);
@@ -259,9 +262,57 @@ namespace RipaD.Client.JsonAccess
         }
 
 
+        public async Task<bool> UploadFileAsync(string uri, string apiKey, Stream fileStream, string fileName, string subFolderName)
+        {
+            if (apiKey.Length > 0)
+            {
+                uri += "/" + apiKey;
+            }
+
+            subFolderName = WebUtility.UrlEncode(subFolderName);
+            uri += "/File/" + subFolderName;
+
+            HttpContent fileStreamContent = new StreamContent(fileStream);
+            fileStreamContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = "file", FileName = fileName };
+            fileStreamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+
+
+            using (var formData = new MultipartFormDataContent())
+            {
+                formData.Add(fileStreamContent);
+                var response = await _client.PostAsync(uri, formData);
+                return response.IsSuccessStatusCode;
+            }
+        }
+
+        public async Task<byte[]> DownloadFileAsync(string uri, string apiKey, string subFolderName, string fileName)
+        {
+            if (apiKey.Length > 0)
+            {
+                uri += "/" + apiKey;
+            }
+
+            subFolderName = WebUtility.UrlEncode(subFolderName);
+            fileName = WebUtility.UrlEncode(fileName);
+
+            uri += "/File/" + subFolderName ;
+            uri += "/" + fileName;
+
+            var result =  _client.GetAsync(uri).Result;
+
+            if (result.IsSuccessStatusCode)
+            {
+                byte[] bytes = await result.Content.ReadAsByteArrayAsync();
+                return bytes;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
-
-
 
 
 
