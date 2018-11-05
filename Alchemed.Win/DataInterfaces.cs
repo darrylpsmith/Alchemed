@@ -309,10 +309,11 @@ namespace ConsultWill
 
         }
 
-        public void LaunchPatientFile(Patient patient, string folder, string file)
+        public Image LaunchPatientFile(Patient patient, string folder, string file)
         {
             string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, false);
             System.Diagnostics.Process.Start(radFolder + "/" + file);
+            return null;
 
         }
 
@@ -323,6 +324,98 @@ namespace ConsultWill
             return tn.GetThumbnail(Artifact.OriginalFullFilePath);
 
             
+        }
+
+
+        public string GetPatientCommentsForConsult(Consult consult)
+        {
+            if (File.Exists(StaticFunctions.GetSelectedPatientCommentFolder(consult.PatientId) + "\\commemts.txt") == true)
+            {
+                return File.ReadAllText(StaticFunctions.GetSelectedPatientCommentFolder(consult.PatientId) + "\\commemts.txt");
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void AddClinicalNotes(Patient patient)
+        {
+            string patientFolder = StaticFunctions.GetSelectedPatientFolder(patient.GetPatientString(), false);
+            string clinicalNotesFile = patientFolder + "\\" + StaticFunctions.ClinicalNotesFileName;
+            if (File.Exists(clinicalNotesFile))
+            {
+                StaticFunctions.OpenWordDoc(clinicalNotesFile);
+            }
+            else
+            {
+                string folderName;
+
+                folderName = patient.GetPatientString();
+
+                folderName = StaticFunctions.PatientsRootFolder + "\\" + patient.GetPatientString().Substring(0, 1) + "\\" + folderName;
+
+                string FileName = folderName + "\\" + StaticFunctions.ClinicalNotesFileName;
+
+                StaticFunctions.CreateWordDoc(FileName, true);
+            }
+
+        }
+
+        public void AddOperationNotes (Patient patient)
+        {
+            SelectPostOpTemplate post = new SelectPostOpTemplate();
+            post.ShowDialog();
+            string selectedTemplate = post.SelectedTemplate();
+
+            if (selectedTemplate != null)
+            {
+                string patientFolder = StaticFunctions.GetSelectedPatientFolder(patient.GetPatientString(), false);
+                int fileNumber = 0;
+
+                string targetFile;
+
+                if (Directory.Exists(StaticFunctions.GetSelectedPatientOperationFolder(patient.GetPatientString())) == false)
+                {
+                    Directory.CreateDirectory(StaticFunctions.GetSelectedPatientOperationFolder(patient.GetPatientString()));
+                }
+
+                targetFile = StaticFunctions.GetSelectedPatientOperationFolder(patient.GetPatientString()) + "\\" + selectedTemplate;
+                targetFile = targetFile.Replace(".doc", fileNumber.ToString() + ".doc");
+                while (File.Exists(targetFile))
+                {
+                    fileNumber++;
+                    targetFile = StaticFunctions.GetSelectedPatientOperationFolder(patient.GetPatientString()) + "\\" + selectedTemplate;
+                    targetFile = targetFile.Replace(".doc", fileNumber.ToString() + ".doc");
+                }
+
+                File.Copy(StaticFunctions.TemplatesFolder + "\\" + selectedTemplate, targetFile);
+                Microsoft.Office.Interop.Word.Document doc = StaticFunctions.OpenWordDoc(targetFile);
+
+                Patient pt = new Patient(patient.GetPatientString());
+
+                StaticFunctions.ReplaceInDoc(doc, "@@FNAME@@", pt.FirstName);
+                StaticFunctions.ReplaceInDoc(doc, "@@LNAME@@", pt.LastName);
+                StaticFunctions.ReplaceInDoc(doc, "@@PN@@", pt.PatientNo.ToString());
+
+               
+            }
+
+        }
+
+        public List<ClinicalNotes>  GetClinicalNotes(Patient patient)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StoreClinicalNote(ClinicalNotes note)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StoreOperationNotes(OperationDetails operation)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -23,5 +23,8 @@
     <Setting Name="AppName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Alchemed</Value>
     </Setting>
+    <Setting Name="ApiKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

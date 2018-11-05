@@ -40,6 +40,8 @@
             this.chkUseCloud = new System.Windows.Forms.CheckBox();
             this.lblCloudUrl = new System.Windows.Forms.Label();
             this.txtCloudUrl = new System.Windows.Forms.TextBox();
+            this.txtApiKey = new System.Windows.Forms.TextBox();
+            this.lblApiKey = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnChooseFolder
@@ -64,7 +66,7 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(290, 223);
+            this.btnOk.Location = new System.Drawing.Point(320, 341);
             this.btnOk.Margin = new System.Windows.Forms.Padding(2);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(56, 19);
@@ -76,7 +78,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(351, 223);
+            this.btnCancel.Location = new System.Drawing.Point(381, 341);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(56, 19);
@@ -98,7 +100,7 @@
             // radModePA
             // 
             this.radModePA.AutoSize = true;
-            this.radModePA.Location = new System.Drawing.Point(9, 156);
+            this.radModePA.Location = new System.Drawing.Point(29, 258);
             this.radModePA.Name = "radModePA";
             this.radModePA.Size = new System.Drawing.Size(69, 17);
             this.radModePA.TabIndex = 5;
@@ -109,7 +111,7 @@
             // radModeDoctor
             // 
             this.radModeDoctor.AutoSize = true;
-            this.radModeDoctor.Location = new System.Drawing.Point(9, 184);
+            this.radModeDoctor.Location = new System.Drawing.Point(29, 286);
             this.radModeDoctor.Name = "radModeDoctor";
             this.radModeDoctor.Size = new System.Drawing.Size(87, 17);
             this.radModeDoctor.TabIndex = 6;
@@ -155,12 +157,31 @@
             this.txtCloudUrl.Size = new System.Drawing.Size(398, 20);
             this.txtCloudUrl.TabIndex = 10;
             // 
+            // txtApiKey
+            // 
+            this.txtApiKey.Location = new System.Drawing.Point(9, 165);
+            this.txtApiKey.Name = "txtApiKey";
+            this.txtApiKey.PasswordChar = '*';
+            this.txtApiKey.Size = new System.Drawing.Size(100, 20);
+            this.txtApiKey.TabIndex = 12;
+            // 
+            // lblApiKey
+            // 
+            this.lblApiKey.AutoSize = true;
+            this.lblApiKey.Location = new System.Drawing.Point(8, 149);
+            this.lblApiKey.Name = "lblApiKey";
+            this.lblApiKey.Size = new System.Drawing.Size(43, 13);
+            this.lblApiKey.TabIndex = 13;
+            this.lblApiKey.Text = "Api Key";
+            // 
             // Configure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(448, 247);
+            this.ClientSize = new System.Drawing.Size(448, 371);
             this.ControlBox = false;
+            this.Controls.Add(this.lblApiKey);
+            this.Controls.Add(this.txtApiKey);
             this.Controls.Add(this.lblCloudUrl);
             this.Controls.Add(this.txtCloudUrl);
             this.Controls.Add(this.chkUseCloud);
@@ -198,5 +219,7 @@
         private System.Windows.Forms.CheckBox chkUseCloud;
         private System.Windows.Forms.Label lblCloudUrl;
         private System.Windows.Forms.TextBox txtCloudUrl;
+        private System.Windows.Forms.TextBox txtApiKey;
+        private System.Windows.Forms.Label lblApiKey;
     }
 }

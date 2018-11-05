@@ -10,6 +10,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Alchemed.DataModel;
 using System.Reflection;
+using RipaD.Client.JsonAccess;
 
 namespace ConsultWill
 {
@@ -40,7 +41,16 @@ namespace ConsultWill
 
         public static void HandleException(Exception ex)
         {
-            MessageBox.Show(ex.Message, "An Error Occurred ... Call Blackie");
+
+            if (ex is AssyncHelperException)
+            {
+                MessageBox.Show(ex.InnerException.Message, "An Error Occurred", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                MessageBox.Show(ex.Message, "An Error Occurred", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            
         }
 
         public static string ClinicalNotesFileName
@@ -200,6 +210,11 @@ namespace ConsultWill
         {
             get
             {
+                if (!Directory.Exists(StorageFolder + "\\" + "ConsultTracker"))
+                {
+                    Directory.CreateDirectory(StorageFolder + "\\" + "ConsultTracker");
+                }
+
                 return StorageFolder + "\\" + "ConsultTracker";
             }
         }
@@ -292,6 +307,31 @@ namespace ConsultWill
             }
         }
 
+        internal static bool PingServer()
+        {
+            string ipandport = StaticFunctions.CloudStorageUrl.Replace("https://", "");
+            ipandport = ipandport.Replace("http://", "");
+            if (ipandport.Contains("/"))
+            {
+                ipandport = ipandport.Substring(0, ipandport.IndexOf("/"));
+            }
+            string ip;
+            string port;
+
+            if (ipandport.Contains(":"))
+            {
+                ip = ipandport.Split(':')[0];
+                port = ipandport.Split(':')[1];
+            }
+            else
+            {
+                ip = ipandport;
+                port = "";
+            }
+
+            return ApiServerStatus.PingHost(ip, Convert.ToInt32(port));
+        }
+
         public static string PAMessage
         {
             get
@@ -342,6 +382,18 @@ namespace ConsultWill
             }
         }
 
+        public static string CloudApiKey
+        {
+            get
+            {
+                return Properties.Settings.Default.ApiKey;
+            }
+            set
+            {
+                Properties.Settings.Default.ApiKey = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         public static bool UseCloadStorage
         {
@@ -372,6 +424,7 @@ namespace ConsultWill
         public static List<DocumentAssignmentFolder> PatientDocumentConfig ()
         {
             List<DocumentAssignmentFolder> folders = new List<DocumentAssignmentFolder>();
+            folders.Add(PatientFilesDocsConfig);
             folders.Add(PatientConsultDocsConfig);
             folders.Add(PatientInvestigationsAndRadiologyDocsConfig);
             folders.Add(PatientProblemQuestionaireDocsConfig);
@@ -379,6 +432,20 @@ namespace ConsultWill
             folders.Add(PatientPostOperationsDocsConfig);
             return folders;
         }
+        private static DocumentAssignmentFolder PatientFilesDocsConfig
+        {
+            get
+            {
+                return new DocumentAssignmentFolder
+                {
+                    DisplayName = "Patient Detail Files",
+                    FolderName = "PatientDetails",
+                    RemoveSourceFilesWhenAssigningToFolder = true,
+                    ParentFolderName = "[PATIENT]"
+                };
+            }
+        }
+
 
         private static DocumentAssignmentFolder PatientPreOperationsDocsConfig
         {
@@ -386,7 +453,7 @@ namespace ConsultWill
                 return new DocumentAssignmentFolder {
                     DisplayName = "Pre Surgical Operations",
                     FolderName = "PreOperations",
-                    RemoveSourceFilesWhenAssigningToFolder = true,
+                    RemoveSourceFilesWhenAssigningToFolder = false,
                     ParentFolderName =  "[PATIENT]" } ;
                 }
         }

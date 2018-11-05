@@ -86,10 +86,7 @@ namespace RipaD.Client.JsonAccess
             string query = GetQueryStringForEntity(entity, propertiesToFilterOn);
             bool returnsArray = false;
             
-            if (ApiKey.Length > 0)
-            {
-                uri += "/" + ApiKey;
-            }
+
 
             if (returnsAlllist)
             {
@@ -107,6 +104,11 @@ namespace RipaD.Client.JsonAccess
             }
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (ApiKey.Length > 0)
+            {
+                request.Headers.Add("ApiKey", ApiKey);
+            }
+
             //request.Content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
             var response = await _client.SendAsync(request);
 
@@ -146,16 +148,11 @@ namespace RipaD.Client.JsonAccess
             return (T)ret;
         }
 
-        public async Task<T> PostAsync <T>(string uri, string ApiKey, T entity)
+        public async Task<T> PostAsync <T>(string uri, string apiKey, T entity)
         {
 
             string strBody = JsonConvert.SerializeObject(entity);
             string entityType = entity.GetType().Name;
-
-            if (ApiKey.Length > 0)
-            {
-                uri += "/" + ApiKey;
-            }
             
             uri += "/" + entityType;
 
@@ -165,12 +162,20 @@ namespace RipaD.Client.JsonAccess
             {
                 StringContent bd = new StringContent(strBody);
                 bd.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                if (apiKey.Length > 0)
+                {
+                    bd.Headers.Add("ApiKey", apiKey);
+                }
                 response = await _client.PostAsync(uri, bd);
             }
             else
             {
                 StringContent bd = new StringContent("");
                 bd.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                if (apiKey.Length > 0)
+                {
+                    bd.Headers.Add("ApiKey", apiKey);
+                }
                 response = await _client.PostAsync(uri, bd);
             }
 
@@ -213,11 +218,15 @@ namespace RipaD.Client.JsonAccess
             string strBody = JsonConvert.SerializeObject(entity);
             string entityType = entity.GetType().Name;
 
-            uri += "/" + apiKey;
             uri += "/" + entityType;
 
             StringContent bd = new StringContent(strBody);
             bd.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            if (apiKey.Length > 0)
+            {
+                bd.Headers.Add("ApiKey", apiKey);
+            }
+
             var response = await _client.PutAsync(uri, bd);
 
             response.EnsureSuccessStatusCode();
@@ -237,7 +246,6 @@ namespace RipaD.Client.JsonAccess
             string strBody = JsonConvert.SerializeObject(entity);
             string entityType = entity.GetType().Name;
 
-            uri += "/" + apiKey;
             uri += "/" + entityType;
 
             HttpClient client = new HttpClient();
@@ -247,6 +255,10 @@ namespace RipaD.Client.JsonAccess
             {
                 Content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json")
             };
+            if (apiKey.Length > 0)
+            {
+                request.Headers.Add("ApiKey", apiKey);
+            }
             var response = await client.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
@@ -264,10 +276,6 @@ namespace RipaD.Client.JsonAccess
 
         public async Task<bool> UploadFileAsync(string uri, string apiKey, Stream fileStream, string fileName, string subFolderName)
         {
-            if (apiKey.Length > 0)
-            {
-                uri += "/" + apiKey;
-            }
 
             subFolderName = WebUtility.UrlEncode(subFolderName);
             uri += "/File/" + subFolderName;
@@ -275,23 +283,33 @@ namespace RipaD.Client.JsonAccess
             HttpContent fileStreamContent = new StreamContent(fileStream);
             fileStreamContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = "file", FileName = fileName };
             fileStreamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
+            //if (apiKey.Length > 0)
+            //{
+            //    fileStreamContent.Headers.Add("ApiKey", apiKey);
+            //}
 
 
             using (var formData = new MultipartFormDataContent())
             {
                 formData.Add(fileStreamContent);
-                var response = await _client.PostAsync(uri, formData);
-                return response.IsSuccessStatusCode;
+
+                var request = new HttpRequestMessage(HttpMethod.Post, uri);
+                request.Content = formData;
+                if (apiKey.Length > 0)
+                {
+                    request.Headers.Add("ApiKey", apiKey);
+                }
+
+                var result = await _client.SendAsync(request);
+
+
+                //var response = await _client.PostAsync(uri, formData);
+                return result.IsSuccessStatusCode;
             }
         }
 
         public async Task<byte[]> DownloadFileAsync(string uri, string apiKey, string subFolderName, string fileName)
         {
-            if (apiKey.Length > 0)
-            {
-                uri += "/" + apiKey;
-            }
 
             subFolderName = WebUtility.UrlEncode(subFolderName);
             fileName = WebUtility.UrlEncode(fileName);
@@ -299,7 +317,13 @@ namespace RipaD.Client.JsonAccess
             uri += "/File/" + subFolderName ;
             uri += "/" + fileName;
 
-            var result =  _client.GetAsync(uri).Result;
+            var request = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (apiKey.Length > 0)
+            {
+                request.Headers.Add("ApiKey", apiKey);
+            }
+
+            var result = await _client.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
             {

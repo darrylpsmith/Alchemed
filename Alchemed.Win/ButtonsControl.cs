@@ -128,25 +128,10 @@ namespace ConsultWill
         {
             try
             {
+
                 statusMessagee("Launching Clinical Notes...", true);
-                string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString(), false);
-                string clinicalNotesFile = patientFolder + "\\" + StaticFunctions.ClinicalNotesFileName;
-                if (File.Exists(clinicalNotesFile))
-                {
-                    StaticFunctions.OpenWordDoc(clinicalNotesFile);
-                }
-                else
-                {
-                    string folderName;
 
-                    folderName = _currPerson.GetPatientString();
-
-                    folderName = StaticFunctions.PatientsRootFolder + "\\" + _currPerson.GetPatientString().Substring(0,1) + "\\" +  folderName;
-
-                    string FileName = folderName + "\\" + StaticFunctions.ClinicalNotesFileName;
-
-                    StaticFunctions.CreateWordDoc(FileName, true);
-                }
+                StaticFunctions.DataInterface().AddClinicalNotes(_currPerson);
 
                 statusMessagee("", false);
             }
@@ -155,7 +140,16 @@ namespace ConsultWill
                 StaticFunctions.HandleException(ex);
                 statusMessagee("", false);
             }
+
+
         }
+
+
+        private void AddClinicalNotesDropboxVersion ()
+        {
+        }
+
+
 
         private void btnInstructionsForPa_Click(object sender, EventArgs e)
         {
@@ -214,47 +208,15 @@ namespace ConsultWill
         {
             try
             {
+
+
                 statusMessagee("Adding post Operation document...", true);
 
-                SelectPostOpTemplate post = new SelectPostOpTemplate();
-                post.ShowDialog();
-                string selectedTemplate = post.SelectedTemplate();
+                StaticFunctions.DataInterface().AddOperationNotes(_currPerson);
 
-                if (selectedTemplate != null)
-                {
-                    string patientFolder = StaticFunctions.GetSelectedPatientFolder(_currPerson.GetPatientString(), false);
-                    int fileNumber = 0;
-
-                    string targetFile;
-
-                    if (Directory.Exists(StaticFunctions.GetSelectedPatientOperationFolder(_currPerson.GetPatientString())) == false)
-                    {
-                        Directory.CreateDirectory(StaticFunctions.GetSelectedPatientOperationFolder(_currPerson.GetPatientString()));
-                    }
-
-                    targetFile = StaticFunctions.GetSelectedPatientOperationFolder(_currPerson.GetPatientString()) + "\\" + selectedTemplate;
-                    targetFile = targetFile.Replace(".doc", fileNumber.ToString() + ".doc");
-                    while (File.Exists(targetFile))
-                    {
-                        fileNumber++;
-                        targetFile = StaticFunctions.GetSelectedPatientOperationFolder(_currPerson.GetPatientString()) + "\\" + selectedTemplate;
-                        targetFile = targetFile.Replace(".doc", fileNumber.ToString() + ".doc");
-                    }
-
-                    File.Copy(StaticFunctions.TemplatesFolder + "\\" + selectedTemplate, targetFile);
-                    Microsoft.Office.Interop.Word.Document doc = StaticFunctions.OpenWordDoc(targetFile);
-
-                    Patient pt = new Patient(_currPerson.GetPatientString());
-
-                    StaticFunctions.ReplaceInDoc(doc, "@@FNAME@@", pt.FirstName);
-                    StaticFunctions.ReplaceInDoc(doc, "@@LNAME@@", pt.LastName);
-                    StaticFunctions.ReplaceInDoc(doc, "@@PN@@", pt.PatientNo.ToString());
-
-                    addOperationButtonPressed();
-                }
-
-                
                 statusMessagee("", false);
+
+                addOperationButtonPressed();
             }
             catch (Exception ex)
             {

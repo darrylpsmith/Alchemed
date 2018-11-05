@@ -8,6 +8,14 @@ using System.Threading;
 namespace RipaD.Client.JsonAccess
 {
 
+    public class AssyncHelperException : AggregateException 
+    {
+        public AssyncHelperException(string message, Exception innerException) : base (message, innerException)
+        {
+        }
+    }
+
+
 
     public class ExclusiveSynchronizationContext : SynchronizationContext
     {
@@ -53,7 +61,7 @@ namespace RipaD.Client.JsonAccess
                     task.Item1(task.Item2);
                     if (InnerException != null) // the method threw an exeption
                     {
-                        throw new AggregateException("AsyncHelpers.Run method threw an exception.", InnerException);
+                        throw new AssyncHelperException("AsyncHelpers.Run method threw an exception.", InnerException);
                     }
                 }
                 else

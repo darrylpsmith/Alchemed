@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  alchemed.api:
+    image: $alchemedapi
+    build:
+      context: .
+      dockerfile: Alchemed.Api/Dockerfile

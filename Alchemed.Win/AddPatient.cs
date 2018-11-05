@@ -52,29 +52,35 @@ namespace ConsultWill
 
 
                     //Directory.CreateDirectory(folderName);
+                    if (StaticFunctions.UseDropBoxStorage == true)
+                    {
+                        string FileName = folderName + "\\" + StaticFunctions.ClinicalNotesFileName;
 
-                    string FileName = folderName + "\\" + StaticFunctions.ClinicalNotesFileName;
+                        this.Hide();
+                        Application.UseWaitCursor = true;
+                        Application.DoEvents();
 
-                    this.Hide();
-                    Application.UseWaitCursor = true;
-                    Application.DoEvents();
-
-                    var doc = StaticFunctions.CreateWordDoc(FileName, false);
+                        var doc = StaticFunctions.CreateWordDoc(FileName, false);
 
 
-                    doc.Application.Selection.TypeText (Text: txtLasteName.Text + ", " + txtFirstName.Text + " " + txtPatientNumber.Text);
-                    doc.Application.Selection.TypeParagraph();
-                    doc.Range(0, 0).Select();
-                    doc.Application.Selection.MoveEnd (wdLine);
-                    
-                    doc.Application.Selection.Font.Size = 20;
-                    doc.Application.Selection.Font.Bold = wdToggle;
+                        doc.Application.Selection.TypeText(Text: txtLasteName.Text + ", " + txtFirstName.Text + " " + txtPatientNumber.Text);
+                        doc.Application.Selection.TypeParagraph();
+                        doc.Range(0, 0).Select();
+                        doc.Application.Selection.MoveEnd(wdLine);
 
-                    doc.Save();
-                    doc.Application.Quit(false);
-                    Application.UseWaitCursor = false;
+                        doc.Application.Selection.Font.Size = 20;
+                        doc.Application.Selection.Font.Bold = wdToggle;
 
-                    
+                        doc.Save();
+                        doc.Application.Quit(false);
+                        Application.UseWaitCursor = false;
+
+
+
+                    }
+
+
+
                     AddedPatient = patientToAdd;
 
 
@@ -83,9 +89,9 @@ namespace ConsultWill
                         Doctor referringDoc = new Doctor(txtReferringDocLname.Text, txtReferringDocFname.Text, txtReferEmail.Text);
                         StaticFunctions.StoreReferringDoctor(patient, referringDoc);
                     }
-
                     this.DialogResult = DialogResult.OK;
                     this.Hide();
+
                 }
                 else
                 {

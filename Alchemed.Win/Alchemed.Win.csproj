@@ -103,6 +103,24 @@
     <Compile Include="DocumentStore.Designer.cs">
       <DependentUpon>DocumentStore.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmClinicalNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmClinicalNotes.Designer.cs">
+      <DependentUpon>frmClinicalNotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmOperationDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOperationDetails.Designer.cs">
+      <DependentUpon>frmOperationDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmViewImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmViewImage.Designer.cs">
+      <DependentUpon>frmViewImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="IDataInterfaces.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
@@ -110,7 +128,12 @@
     <Compile Include="Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Operation.cs" />
+    <Compile Include="mdiMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mdiMain.Designer.cs">
+      <DependentUpon>mdiMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Patient.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="PersonSearch.cs">
@@ -162,8 +185,20 @@
     <EmbeddedResource Include="DocumentStore.resx">
       <DependentUpon>DocumentStore.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmClinicalNotes.resx">
+      <DependentUpon>frmClinicalNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOperationDetails.resx">
+      <DependentUpon>frmOperationDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmViewImage.resx">
+      <DependentUpon>frmViewImage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="mdiMain.resx">
+      <DependentUpon>mdiMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PersonSearch.resx">
       <DependentUpon>PersonSearch.cs</DependentUpon>

@@ -36,6 +36,8 @@
             this.picCoffee = new System.Windows.Forms.PictureBox();
             this.flowDocuments = new System.Windows.Forms.FlowLayoutPanel();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
+            this.tabArtifacts = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.flowMain1 = new System.Windows.Forms.FlowLayoutPanel();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -45,6 +47,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picCoffee)).BeginInit();
+            this.flowMain.SuspendLayout();
+            this.tabArtifacts.SuspendLayout();
             this.statusBar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +58,7 @@
             this.moreToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1217, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(640, 24);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
@@ -100,17 +104,36 @@
             // flowDocuments
             // 
             this.flowDocuments.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.flowDocuments.Location = new System.Drawing.Point(963, 254);
+            this.flowDocuments.Location = new System.Drawing.Point(675, 254);
             this.flowDocuments.Name = "flowDocuments";
             this.flowDocuments.Size = new System.Drawing.Size(486, 249);
             this.flowDocuments.TabIndex = 0;
             // 
             // flowMain
             // 
-            this.flowMain.Location = new System.Drawing.Point(12, 361);
+            this.flowMain.Controls.Add(this.tabArtifacts);
+            this.flowMain.Location = new System.Drawing.Point(12, 345);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(1133, 233);
+            this.flowMain.Size = new System.Drawing.Size(620, 274);
             this.flowMain.TabIndex = 34;
+            // 
+            // tabArtifacts
+            // 
+            this.tabArtifacts.Controls.Add(this.tabPage1);
+            this.tabArtifacts.Location = new System.Drawing.Point(3, 3);
+            this.tabArtifacts.Name = "tabArtifacts";
+            this.tabArtifacts.SelectedIndex = 0;
+            this.tabArtifacts.Size = new System.Drawing.Size(608, 271);
+            this.tabArtifacts.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(600, 245);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // flowMain1
             // 
@@ -125,7 +148,7 @@
             this.toolStripStatusLabel1});
             this.statusBar.Location = new System.Drawing.Point(0, 622);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(1217, 22);
+            this.statusBar.Size = new System.Drawing.Size(640, 22);
             this.statusBar.TabIndex = 36;
             this.statusBar.Text = "statusStrip1";
             // 
@@ -177,7 +200,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1217, 644);
+            this.ClientSize = new System.Drawing.Size(640, 644);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lblChat);
             this.Controls.Add(this.txtMsgshort);
@@ -197,6 +220,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picCoffee)).EndInit();
+            this.flowMain.ResumeLayout(false);
+            this.tabArtifacts.ResumeLayout(false);
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
             this.ResumeLayout(false);
@@ -219,6 +244,8 @@
         private System.Windows.Forms.TextBox txtMsgshort;
         private System.Windows.Forms.Label lblChat;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TabControl tabArtifacts;
+        private System.Windows.Forms.TabPage tabPage1;
     }
 }
 

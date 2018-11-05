@@ -32,11 +32,22 @@ namespace ConsultWill
 
         void AssignPatientFile(MedicalArtifact artifact, string selectedFile, string targetFolder, string relativeFolder, string fileName, bool RemoveSourceFilesWhenAssigningToFolder);
 
-        void LaunchPatientFile(Patient patient, string folder, string file);
+        Image LaunchPatientFile(Patient patient, string folder, string file);
 
         MedicalArtifactThumbNail GetPatientMedicalArtifactThumbnail(string ArtifactId);
 
         Image GetPatientMedicalArtifactThumbnailImage(Patient patient, string folder, MedicalArtifact Artifact);
-        
+
+        string GetPatientCommentsForConsult(Consult consult);
+
+        void AddClinicalNotes(Patient patient);
+
+        List<ClinicalNotes> GetClinicalNotes(Patient patient);
+
+        void StoreClinicalNote(ClinicalNotes note);
+
+        void AddOperationNotes(Patient patient);
+
+        void StoreOperationNotes(OperationDetails operation);
     }
 }

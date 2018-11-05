@@ -34,6 +34,7 @@
             this.lvwDocuments = new System.Windows.Forms.ListView();
             this.colPatient = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imgThumbnails = new System.Windows.Forms.ImageList(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblDescription
@@ -48,6 +49,7 @@
             // 
             // btnAdd
             // 
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(199, 3);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(30, 23);
@@ -58,6 +60,8 @@
             // 
             // lvwDocuments
             // 
+            this.lvwDocuments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwDocuments.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colPatient});
             this.lvwDocuments.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -80,17 +84,28 @@
             this.imgThumbnails.ImageSize = new System.Drawing.Size(16, 16);
             this.imgThumbnails.TransparentColor = System.Drawing.Color.Transparent;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(124, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(30, 23);
+            this.button1.TabIndex = 26;
+            this.button1.Text = "...";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // DocumentStore
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.lvwDocuments);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lblDescription);
             this.Name = "DocumentStore";
             this.Size = new System.Drawing.Size(230, 231);
-            
+            this.Load += new System.EventHandler(this.DocumentStore_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -102,5 +117,6 @@
         private System.Windows.Forms.ListView lvwDocuments;
         private System.Windows.Forms.ColumnHeader colPatient;
         private System.Windows.Forms.ImageList imgThumbnails;
+        private System.Windows.Forms.Button button1;
     }
 }

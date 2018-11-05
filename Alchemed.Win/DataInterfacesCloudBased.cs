@@ -13,11 +13,13 @@ namespace ConsultWill
 {
     class DataInterfacesCloudBased : IDataInterfaces
     {
+
+        FabricJsonAccess _jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, StaticFunctions.CloudApiKey);
+
         public void AddPatient(Patient newPatient)
         {
             Patient entity = newPatient;
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            Alchemed.DataModel.Patient entityCreated = (Patient)AsyncHelpers.RunSync<Patient>(() => jsonAccess.CreateEntity<Patient>(entity));
+            Alchemed.DataModel.Patient entityCreated = (Patient)AsyncHelpers.RunSync<Patient>(() => _jsonAccess.CreateEntity<Patient>(entity));
             //jsonAccess.CreateEntity<Alchemed.DataModel.Patient>(entity);
 
             string entityJson = JsonConvert.SerializeObject(entityCreated, Formatting.Indented);
@@ -26,8 +28,7 @@ namespace ConsultWill
 
         public void AddToTodaysConsults(Consult consult)
         {
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            Consult entityCreated = (Consult)AsyncHelpers.RunSync<Consult>(() => jsonAccess.CreateEntity<Consult>(consult));
+            Consult entityCreated = (Consult)AsyncHelpers.RunSync<Consult>(() => _jsonAccess.CreateEntity<Consult>(consult));
             //jsonAccess.CreateEntity<Alchemed.DataModel.Patient>(entity);
 
             string entityJson = JsonConvert.SerializeObject(entityCreated, Formatting.Indented);
@@ -36,8 +37,7 @@ namespace ConsultWill
         public Patient GetPatientById(string Id)
         {
             Patient entity = new Patient() { Id = Id }; // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            Patient entityCreated = (Patient)AsyncHelpers.RunSync<Patient>(() => jsonAccess.GetEntityById<Patient>(entity));
+            Patient entityCreated = (Patient)AsyncHelpers.RunSync<Patient>(() => _jsonAccess.GetEntityById<Patient>(entity));
             return entityCreated;
         }
 
@@ -47,8 +47,7 @@ namespace ConsultWill
             MedicalArtifact entity = new MedicalArtifact(); // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
             entity.TypeId = relativeFolder;
             entity.PatientId = patient.Id;
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => jsonAccess.GetEntities<object>(entity, new List<string> { "TypeId", "PatientId"} ));
+            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => _jsonAccess.GetEntities<object>(entity, new List<string> { "TypeId", "PatientId"} ));
             if (entityCreated != null)
             {
                 var artifacts = JsonConvert.DeserializeObject<IEnumerable<MedicalArtifact>>(entityCreated.ToString());
@@ -67,8 +66,7 @@ namespace ConsultWill
             string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, true);
             //System.Diagnostics.Process.Start(radFolder + "/" + file);
 
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            byte[] fresult = (byte[])AsyncHelpers.RunSync<byte[]>(() => jsonAccess.DownloadFileAsync(radFolder, thumb.Name));
+            byte[] fresult = (byte[])AsyncHelpers.RunSync<byte[]>(() => _jsonAccess.DownloadFileAsync(radFolder, thumb.Name));
 
 
             return byteArrayToImage(fresult);
@@ -95,13 +93,21 @@ namespace ConsultWill
             Image returnImage = Image.FromStream(ms);
             return returnImage;
         }
-        
+
+        public byte[] ImageToByteArray(System.Drawing.Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, imageIn.RawFormat);
+                return ms.ToArray();
+            }
+        }
+
         public MedicalArtifactThumbNail GetPatientMedicalArtifactThumbnail(string ArtifactId)
         {
             MedicalArtifactThumbNail entity = new MedicalArtifactThumbNail(); // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
             entity.ArtifactId = ArtifactId;
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            MedicalArtifactThumbNail entityCreated = (MedicalArtifactThumbNail)AsyncHelpers.RunSync<MedicalArtifactThumbNail>(() => jsonAccess.GetEntity<MedicalArtifactThumbNail>(entity, new List<string> { "ArtifactId" }));
+            MedicalArtifactThumbNail entityCreated = (MedicalArtifactThumbNail)AsyncHelpers.RunSync<MedicalArtifactThumbNail>(() => _jsonAccess.GetEntity<MedicalArtifactThumbNail>(entity, new List<string> { "ArtifactId" }));
 
             return entityCreated;
 
@@ -139,8 +145,7 @@ namespace ConsultWill
         {
             Patient entity = new Patient(); // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
 
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => jsonAccess.GetEntities<object>(entity, null));
+            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => _jsonAccess.GetEntities<object>(entity, null));
             var patients =  JsonConvert.DeserializeObject<IEnumerable<Patient>>(entityCreated.ToString());
 
             List<Patient> foundPatients = new List<Patient>();
@@ -173,9 +178,7 @@ namespace ConsultWill
 
 
             Consult entity = new Consult(); // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
-
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => jsonAccess.GetEntities<object>(entity, null));
+            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => _jsonAccess.GetEntities<object>(entity, null));
             var consults = JsonConvert.DeserializeObject<IEnumerable<Consult>>(entityCreated.ToString());
 
             return consults.ToList<Consult>();
@@ -203,10 +206,7 @@ namespace ConsultWill
 
         public bool PatientExists(Patient patient)
         {
-
-
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            object fetchedEntity = (object)AsyncHelpers.RunSync<object>(() => jsonAccess.GetEntity<object>(patient, new List<string> { "FirstName", "LastName", "PatientNo" }));
+            object fetchedEntity = (object)AsyncHelpers.RunSync<object>(() => _jsonAccess.GetEntity<object>(patient, new List<string> { "FirstName", "LastName", "PatientNo" }));
             if (fetchedEntity != null)
             {
                 var patients = JsonConvert.DeserializeObject<Patient>(fetchedEntity.ToString());
@@ -223,61 +223,132 @@ namespace ConsultWill
         {
 
             System.IO.Stream st = File.OpenRead(selectedFile);
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            bool fresult= (bool)AsyncHelpers.RunSync<bool>(() => jsonAccess.UploadFileAsync(st, fileName, relativeFolder));
+            bool fresult = (bool)AsyncHelpers.RunSync<bool>(() => _jsonAccess.UploadFileAsync(st, fileName, relativeFolder));
             //File.Copy(selectedFile, targetFolder + fileName);
 
-
-            MedicalArtifact entity = artifact;
-            MedicalArtifact entityCreated = (MedicalArtifact)AsyncHelpers.RunSync<MedicalArtifact>(() => jsonAccess.CreateEntity<MedicalArtifact>(entity));
-            //jsonAccess.CreateEntity<Alchemed.DataModel.Patient>(entity);
-
-            MedicalArtifactThumbNail thumb = new MedicalArtifactThumbNail();
-            thumb.Id = Guid.NewGuid().ToString();
-            thumb.ArtifactId = entityCreated.Id;
-            thumb.Name = "_thumb_" + thumb.Id + ".bmp"; ;
-
-            ThumbNailer tn = new ThumbNailer();
-            string thumbFile = tn.CreateAndSaveThumbNailstring(selectedFile, thumb.Name);
-            if (thumbFile != null)
+            if (fresult)
             {
-                System.IO.Stream stThumb = File.OpenRead(thumbFile);
-                fresult = (bool)AsyncHelpers.RunSync<bool>(() => jsonAccess.UploadFileAsync(stThumb, thumb.Name, relativeFolder));
-                MedicalArtifactThumbNail entityCreatedThumb = (MedicalArtifactThumbNail)AsyncHelpers.RunSync<MedicalArtifactThumbNail>(() => jsonAccess.CreateEntity<MedicalArtifactThumbNail>(thumb));
-                File.Delete(thumbFile);
+                MedicalArtifact entity = artifact;
+                MedicalArtifact entityCreated = (MedicalArtifact)AsyncHelpers.RunSync<MedicalArtifact>(() => _jsonAccess.CreateEntity<MedicalArtifact>(entity));
+                //jsonAccess.CreateEntity<Alchemed.DataModel.Patient>(entity);
+
+                MedicalArtifactThumbNail thumb = new MedicalArtifactThumbNail();
+                thumb.Id = Guid.NewGuid().ToString();
+                thumb.ArtifactId = entityCreated.Id;
+                thumb.Name = "_thumb_" + thumb.Id + ".bmp"; ;
+
+                ThumbNailer tn = new ThumbNailer();
+                //string thumbFile = tn.CreateAndSaveThumbNailstring(selectedFile, thumb.Name);
+                string thumbFile = tn.CreateThumbnail(selectedFile, 100, 100, thumb.Name);
+
+
+                if (thumbFile != null)
+                {
+                    System.IO.Stream stThumb = File.OpenRead(thumbFile);
+                    fresult = (bool)AsyncHelpers.RunSync<bool>(() => _jsonAccess.UploadFileAsync(stThumb, thumb.Name, relativeFolder));
+                    MedicalArtifactThumbNail entityCreatedThumb = (MedicalArtifactThumbNail)AsyncHelpers.RunSync<MedicalArtifactThumbNail>(() => _jsonAccess.CreateEntity<MedicalArtifactThumbNail>(thumb));
+                    File.Delete(thumbFile);
+                }
+
+                if (RemoveSourceFilesWhenAssigningToFolder)
+                {
+                    //File.Delete(selectedFile);
+                }
             }
 
-            if (RemoveSourceFilesWhenAssigningToFolder)
-                File.Delete(selectedFile);
+            else
+            {
+                throw new Exception("Could not upload file");
+            }
+
 
         }
 
-        public void LaunchPatientFile(Patient patient, string folder, string file)
+        public Image LaunchPatientFile(Patient patient, string folder, string file)
         {
             string radFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, true);
             //System.Diagnostics.Process.Start(radFolder + "/" + file);
-
             
-            FabricJsonAccess jsonAccess = new FabricJsonAccess(StaticFunctions.CloudStorageUrl, "");
-            byte[] fresult = (byte[])AsyncHelpers.RunSync<byte[]>(() => jsonAccess.DownloadFileAsync(radFolder, file));
+            byte[] fresult = (byte[])AsyncHelpers.RunSync<byte[]>(() => _jsonAccess.DownloadFileAsync(radFolder, file));
 
-            string radLocalFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, false);
+            //string radLocalFolder = StaticFunctions.GetSelectedPatientDocumentFolder(patient.GetPatientString(), folder, false);
 
-            if (Directory.Exists(radLocalFolder) == false)
-            {
-                Directory.CreateDirectory(radLocalFolder);
-            }
+            //if (Directory.Exists(radLocalFolder) == false)
+            //{
+            //    Directory.CreateDirectory(radLocalFolder);
+            //}
 
-            string localFile = radLocalFolder + "/" + file;
-            File.WriteAllBytes(localFile, fresult);
+            //string localFile = radLocalFolder + "/" + file;
+            //File.WriteAllBytes(localFile, fresult);
 
-            System.Diagnostics.Process.Start(localFile);
+            //System.Diagnostics.Process.Start(localFile);
+            return byteArrayToImage(fresult);
+
 
             //File.WriteAllBytes("Foo.txt", arrBytes);
 
             //System.IO.Stream st = File.OpenRead(selectedFile);
 
             //File.Copy(selectedFile, targetFolder + fileName);
+        }
+
+
+        public string GetPatientCommentsForConsult(Consult consult)
+        {
+            return null;
+        }
+
+        public void AddClinicalNotes(Patient patient)
+        {
+
+            frmClinicalNotes frmNotes = new frmClinicalNotes();
+
+            var clinicalNotes = GetClinicalNotes(patient);
+
+            foreach (var note in clinicalNotes)
+            {
+                frmNotes.LoadNote(note);
+            }
+
+            frmNotes.ShowDialog();
+
+
+            frmNotes.Close();
+            frmNotes = null;
+
+        }
+
+        public void StoreClinicalNote (ClinicalNotes note)
+        {
+            ClinicalNotes entityCreated = (ClinicalNotes)AsyncHelpers.RunSync<ClinicalNotes>(() => _jsonAccess.CreateEntity<ClinicalNotes>(note));
+        }
+
+
+
+
+        public List<ClinicalNotes> GetClinicalNotes(Patient patient)
+        {
+            ClinicalNotes entity = new ClinicalNotes(); // { FirstName = newPatient.FirstName, LastName = newPatient.Surname, PatientNo = newPatient.PatientNumber };
+            object entityCreated = (object)AsyncHelpers.RunSync<object>(() => _jsonAccess.GetEntities<object>(entity, null));
+            var consults = JsonConvert.DeserializeObject<IEnumerable<ClinicalNotes>>(entityCreated.ToString());
+            return consults.ToList<ClinicalNotes>();
+        }
+
+
+        public void AddOperationNotes(Patient patient)
+        {
+            frmOperationDetails frmOp = new frmOperationDetails(patient);
+            frmOp.ShowDialog();
+            if (frmOp.DialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                StoreOperationNotes(frmOp.OpDetails);
+            }
+        }
+
+        public void StoreOperationNotes(OperationDetails operation)
+        {
+            OperationDetails entity = operation;
+            OperationDetails entityCreated = (OperationDetails)AsyncHelpers.RunSync<OperationDetails>(() => _jsonAccess.CreateEntity<OperationDetails>(entity));
         }
     }
 }

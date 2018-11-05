@@ -13,6 +13,11 @@ namespace ConsultWill
 {
     public partial class DocumentStore : UserControl
     {
+
+        public delegate void SelectedImageChanged(Image image);
+        public event SelectedImageChanged selectedImageChanged;
+
+
         DocumentAssignmentFolder _docFolder = null;
         private Patient _currPerson = null;
         private bool _largeImages = false;
@@ -27,7 +32,7 @@ namespace ConsultWill
             this.lblDescription.Text = DocFolder.DisplayName;
             _docFolder.UseLargeImages = LargeImages;
             _largeImages = LargeImages;
-
+            this.Enabled = false;
         }
 
         public Patient CurrentPerson
@@ -37,6 +42,18 @@ namespace ConsultWill
 
                 _currPerson = value;
                 PopulatePatientAttachedFiles();
+
+                if (_currPerson == null)
+                {
+                    this.Enabled = false;
+                }
+                else
+                {
+                    this.Enabled = true;
+                }
+
+
+
             }
 
             get
@@ -202,7 +219,13 @@ namespace ConsultWill
                     if (lvwDocuments.SelectedItems[0].SubItems[0].Text.Length != 0)
                     {
                         MedicalArtifact file = (MedicalArtifact) lvwDocuments.SelectedItems[0].Tag;
-                        StaticFunctions.DataInterface().LaunchPatientFile(_currPerson, file.TypeId, file.Name);
+                        Image img = StaticFunctions.DataInterface().LaunchPatientFile(_currPerson, file.TypeId, file.Name);
+
+
+                        if (img != null)
+                        {
+                            selectedImageChanged(img);
+                        }
 
                     }
                 }
@@ -211,6 +234,11 @@ namespace ConsultWill
             {
 
             }
+        }
+
+        private void DocumentStore_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

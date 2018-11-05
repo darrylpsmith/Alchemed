@@ -13,7 +13,7 @@ namespace ConsultWill
 
         public static bool PingHost(string hostUri, int portNumber)
         {
-            return true;
+            //return true;
             try
             {
                 using (var client = new TcpClient(hostUri, portNumber))
@@ -21,7 +21,7 @@ namespace ConsultWill
             }
             catch (SocketException ex)
             {
-                System.Windows.Forms.MessageBox.Show("Error pinging host:'" + hostUri + ":" + portNumber.ToString() + "'");
+                throw ex;
                 return false;
             }
         }

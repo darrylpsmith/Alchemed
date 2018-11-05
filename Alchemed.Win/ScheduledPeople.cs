@@ -159,11 +159,16 @@ namespace ConsultWill
                 itm.Text = consult.Description;
                 itm.Tag = consult;
                 lvwTodaysPatients.Items.Add(itm);
-                
-                if (File.Exists(StaticFunctions.GetSelectedPatientCommentFolder(consult.PatientId) + "\\commemts.txt") == true)
+
+                string comments = StaticFunctions.DataInterface().GetPatientCommentsForConsult  (consult);
+
+                if (comments != null)
                 {
                     itm.ForeColor = Color.Red;
+                    itm.ToolTipText = comments;
                 }
+                
+
 
             }
         }

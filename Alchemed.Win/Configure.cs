@@ -55,8 +55,8 @@ namespace ConsultWill
 
             StaticFunctions.UseCloadStorage = chkUseCloud.Checked;
             StaticFunctions.UseDropBoxStorage = chkUseDropBox.Checked;
-
-
+            StaticFunctions.CloudStorageUrl = txtCloudUrl.Text;
+            StaticFunctions.CloudApiKey = txtApiKey.Text;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -78,6 +78,7 @@ namespace ConsultWill
             chkUseCloud.Checked = StaticFunctions.UseCloadStorage;
             chkUseDropBox.Checked = StaticFunctions.UseDropBoxStorage;
 
+            txtApiKey.Text = StaticFunctions.CloudApiKey;
         }
     }
 }

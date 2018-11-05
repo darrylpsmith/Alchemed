@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Alchemed.DataModel;
-
+using System.Drawing;
+using System.Drawing.Drawing2D;
 namespace ConsultWill
 {
 
@@ -19,9 +20,10 @@ namespace ConsultWill
         private bool m_bLayoutCalled = false;
         private DateTime m_dt;
 
-        PersonSearch _personSearch = new PersonSearch();
-        ScheduledPeople _scheduledPeople = new ScheduledPeople();
-        ButtonsControl _buttonsContainer = new ButtonsControl();
+
+        PersonSearch _personSearch = null;
+        ScheduledPeople _scheduledPeople = null;
+        ButtonsControl _buttonsContainer = null;
 
         List<DocumentStore> _patientDocumentControls = new List<DocumentStore>();
         DocumentStore _opearionsDocuments = null;
@@ -37,15 +39,29 @@ namespace ConsultWill
         {
             InitializeComponent();
 
-            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.TestSplashScreen_Layout);
+            try
+            {
+                _personSearch = new PersonSearch();
+                _scheduledPeople = new ScheduledPeople();
+                _buttonsContainer = new ButtonsControl();
+            }
+            catch (Exception ex)
+            {
+                StaticFunctions.HandleException(ex);
+                this.Close();
+            }
+
+
+
+            //this.Layout += new System.Windows.Forms.LayoutEventHandler(this.TestSplashScreen_Layout);
 
         }
-        
+
         private void BuildForm()
         {
             //this.Height= 770;
             //this.Width = 660;
-            flowMain.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            //flowShowDetails.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top; // AnchorStyles.Left |
 
 
             _personSearch.selectedPersonChanged += personSearch_Changed;
@@ -68,6 +84,7 @@ namespace ConsultWill
 
 
 
+            tabArtifacts.TabPages.Clear();
 
             foreach (var docType in StaticFunctions.PatientDocumentConfig())
             {
@@ -77,9 +94,19 @@ namespace ConsultWill
                 DocumentStore ds = new DocumentStore(docType, X, Y, docType.UseLargeImages);
                 _patientDocumentControls.Add(ds);
                 _opearionsDocuments = ds;
+                _opearionsDocuments.selectedImageChanged += _opearionsDocuments_selectedImageChanged;
+
+                var tabPage = new TabPage();
+
+                tabArtifacts.TabPages.Add(tabPage);
+                tabPage.Text = docType.DisplayName;
+
                 //this.pnlDocuments.Controls.Add(ds);
                 //this.flowDocuments.Controls.Add(ds);
-                this.flowMain.Controls.Add(ds);
+
+                tabPage.Controls.Add(ds);
+                ds.Dock = DockStyle.Fill;
+                //this.flowMain.Controls.Add(ds);
                 //this.flowMain.Controls.Add(ds);
 
 
@@ -98,6 +125,19 @@ namespace ConsultWill
 
 
         }
+
+        private void _opearionsDocuments_selectedImageChanged(Image image)
+        {
+
+            frmViewImage frmView = new frmViewImage(image);
+            frmView.MdiParent = this.MdiParent;
+            frmView.Show();
+
+            //image.Save("C:/temp/1.jpg");
+            //image.Save("C:/temp/1.bmp");
+            //image.Save("C:/temp/1.png");
+        }
+
 
         private void _buttonsContainer_statusMessagee(string Status, bool DisableUI)
         {
@@ -193,19 +233,11 @@ namespace ConsultWill
 
             try
             {
-                bool setStorageLocation = false;
-                if (StaticFunctions.StorageFolder == null)
-                {
-                    setStorageLocation = true;
-                }
-                else if (StaticFunctions.StorageFolder.Length <= 0)
-                {
-                    setStorageLocation = true;
-                }
 
-                if (setStorageLocation)
-                    configurationToolStripMenuItem1_Click(this, null);
                 
+
+
+
                 WatchForCoffee();
 
                 if  (StaticFunctions.UserMode == UserMode.Doctor)
@@ -227,35 +259,6 @@ namespace ConsultWill
 
                 BuildForm();
 
-
-                if (StaticFunctions.UseCloadStorage)
-                {
-                    string ipandport = StaticFunctions.CloudStorageUrl.Replace("https://","");
-                    ipandport = ipandport.Replace("http://", "");
-                    if (ipandport.Contains("/"))
-                    {
-                        ipandport = ipandport.Substring(0, ipandport.IndexOf("/"));
-                    }
-                    string ip ;
-                    string port;
-
-                    if (ipandport.Contains(":"))
-                    {
-                        ip = ipandport.Split(':')[0];
-                        port = ipandport.Split(':')[1];
-                    }
-                    else
-                    {
-                        ip = ipandport;
-                        port = "";
-                    }
-
-                    if (ApiServerStatus.PingHost(ip, Convert.ToInt32(port)) == false)
-                    {
-                        System.Windows.Forms.MessageBox.Show($"{StaticFunctions.CloudStorageUrl} unavailable.");
-                    }
-                }
-                    
 
                 //WatchForChangesToTodaysPatients();
             }
@@ -682,6 +685,11 @@ namespace ConsultWill
             //File.WriteAllText("C:/temp/text.txt", "HELLO WORLD");
 
             //StaticFunctions.DataInterface().AssignPatientFile(null,"C:/temp/text.txt", "ABC", "ABC", "test.txt", true);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
